@@ -9,17 +9,23 @@ public class Human {
     private int age;
     @Save
     private int weight;
+    @Save
+    private Education education;
+    @Save
+    private Work job;
 
     public Human() {
         super();
     }
 
-    public Human(String name, String surname, int age, int weight) {
+    public Human(String name, String surname, int age, int weight, Education education, Work job) {
         super();
         this.name = name;
         this.surname = surname;
         this.age = age;
         this.weight = weight;
+        this.education = education;
+        this.job = job;
     }
 
     public String getName() {
@@ -56,7 +62,15 @@ public class Human {
 
     @Override
     public String toString() {
-        return "Name: " + name + "; Surname: " + surname + ": Age: " + age + "; Weight: " + weight;
+        String res =  "Name: " + name + System.lineSeparator()
+                        + "Surname: " + surname + System.lineSeparator()
+                        + "Age: " + age + System.lineSeparator()
+                        + "Weight: " + weight + System.lineSeparator()
+                        + "Education: " + (education == null ? "null" :
+                                    ("{" + System.lineSeparator() + education.toString() + System.lineSeparator() + "}")) + System.lineSeparator()
+                        + "Job: " + (job == null ? "null" :
+                                    ("{" + System.lineSeparator() + job.toString() + "}")) + System.lineSeparator();
+        return  res;
     }
 
 }

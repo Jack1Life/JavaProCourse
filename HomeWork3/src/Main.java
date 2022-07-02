@@ -2,8 +2,10 @@ import task1.Calculator;
 import task1.Test;
 import task2.Saver;
 import task2.TextContainer;
+import task3.Education;
 import task3.Human;
 import task3.Serializer;
+import task3.Work;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -29,15 +31,16 @@ public class Main {
         System.out.println("Task 3:");
 
         System.out.println("Serialization:");
-        Human toSerialize = new Human("Oleg", "Tsap", 22, 77);
+        Human toSerialize = new Human("Oleg", "Tsap", 22, 77,
+                new Education("KPI", "Master", 2013, 2019,
+                        new Human("Pavlo", "Tychina", 53, 66, null, null)),
+                new Work("Global", "Developer", 1500));
         String out = Serializer.serialize(toSerialize);
         System.out.println(out);
 
         System.out.println("Deserialization:");
-        Human toDeserialize = new Human();
-        System.out.println("Before: " + toDeserialize.toString());
-        Serializer.deserialize(out, toDeserialize);
-        System.out.println("After: " + toDeserialize.toString());
+        Human toDeserialize = (Human) Serializer.deserialize(out, Human.class);
+        System.out.println(toDeserialize.toString());
     }
 
     public static void main(String[] args)  {
