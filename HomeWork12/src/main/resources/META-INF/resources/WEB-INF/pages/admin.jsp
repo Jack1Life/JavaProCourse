@@ -16,13 +16,16 @@
     <c:url value="/logout" var="logoutUrl" />
     <p>Click to logout: <a href="${logoutUrl}">LOGOUT</a></p>
 
-    <button type="button" id="add_user">Add</button>
-    <button type="button" id="delete_user">Delete</button>
-
+    <c:if test="${admin}">
+        <button type="button" id="add_user">Add</button>
+        <button type="button" id="delete_user">Delete</button>
+    </c:if>
     <table border="1">
         <c:forEach items="${users}" var="user">
             <tr>
-                <td><input type="checkbox" name="toDelete" value="${user.id}" id="check_${user.id}"></td>
+                <c:if test="${admin}">
+                    <td><input type="checkbox" name="toDelete" value="${user.id}" id="check_${user.id}"></td>
+                </c:if>
                 <td><c:out value="${user.login}"/></td>
                 <td><c:out value="${user.role}"/></td>
             </tr>

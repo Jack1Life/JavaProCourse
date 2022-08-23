@@ -11,9 +11,17 @@
             <h3><c:out value="${s}" /></h3>
         </c:forEach>
 
-        <c:if test="${admin}">
+        <c:if test="${admin || moderator}">
             <c:url value="/admin" var="adminUrl" />
-            <p><a href="${adminUrl}">Click</a> for admin page</p>
+            <p>
+                <a href="${adminUrl}"> Click </a>
+                <c:if test="${admin}">
+                    for admin page
+                </c:if>
+                <c:if test="${moderator}">
+                    for moderator page
+                </c:if>
+            </p>
         </c:if>
 
         <c:url value="/update" var="updateUrl" />

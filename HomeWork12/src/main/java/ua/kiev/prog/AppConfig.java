@@ -31,6 +31,9 @@ public class AppConfig extends GlobalMethodSecurityConfiguration {
                 userService.addUser("user",
                         encoder.encode("password"),
                         UserRole.USER, "", "", "");
+                userService.addUser("moderator",
+                        encoder.encode("password"),
+                        UserRole.MODERATOR, "", "", "");
             }
         };
     }

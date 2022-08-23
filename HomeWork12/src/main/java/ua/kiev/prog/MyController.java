@@ -32,7 +32,8 @@ public class MyController {
 
         model.addAttribute("login", login);
         model.addAttribute("roles", user.getAuthorities());
-        model.addAttribute("admin", isAdmin(user));
+        model.addAttribute("admin",     hasRole(user, "ROLE_ADMIN"));
+        model.addAttribute("moderator", hasRole(user, "ROLE_MODERATOR"));
         model.addAttribute("email", dbUser.getEmail());
         model.addAttribute("phone", dbUser.getPhone());
         model.addAttribute("address", dbUser.getAddress());
@@ -42,16 +43,18 @@ public class MyController {
 
     @PostMapping(value = "/update")
     public String update(@RequestParam(required = false) String email,
-                         @RequestParam(required = false) String phone) {
+                         @RequestParam(required = false) String phone,
+                         @RequestParam(required = false) String address) {
         User user = getCurrentUser();
 
         String login = user.getUsername();
-        userService.updateUser(login, email, phone);
+        userService.updateUser(login, email, phone, address);
 
         return "redirect:/";
     }
 
     @PostMapping(value = "/newuser")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String update(@RequestParam String login,
                          @RequestParam String password,
                          @RequestParam(required = false) String email,
@@ -59,7 +62,6 @@ public class MyController {
                          @RequestParam(required = false) String address,
                          Model model) {
         String passHash = passwordEncoder.encode(password);
-
         if ( ! userService.addUser(login, passHash, UserRole.USER, email, phone, address)) {
             model.addAttribute("exists", true);
             model.addAttribute("login", login);
@@ -70,6 +72,7 @@ public class MyController {
     }
 
     @PostMapping(value = "/delete")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String delete(@RequestParam(name = "toDelete[]", required = false) List<Long> ids,
                          Model model) {
         userService.deleteUsers(ids);
@@ -84,12 +87,13 @@ public class MyController {
     }
 
     @GetMapping("/register")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String register() {
         return "register";
     }
 
     @GetMapping("/admin")
-    @PreAuthorize("hasRole('ROLE_ADMIN')") // !!!
+    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_MODERATOR')") // !!!
     public String admin(Model model) {
         model.addAttribute("users", userService.getAllUsers());
         return "admin";
@@ -111,14 +115,17 @@ public class MyController {
                 .getPrincipal();
     }
 
-    private boolean isAdmin(User user) {
+    private boolean hasRole(User user, String role) {
         Collection<GrantedAuthority> roles = user.getAuthorities();
 
         for (GrantedAuthority auth : roles) {
-            if ("ROLE_ADMIN".equals(auth.getAuthority()))
+            if (role.equals(auth.getAuthority()))
                 return true;
         }
 
         return false;
+    }
+    private boolean isAdmin(User user) {
+        return hasRole(user, "ROLE_ADMIN");
     }
 }
