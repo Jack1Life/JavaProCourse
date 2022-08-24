@@ -48,10 +48,44 @@ public enum BotState {
 
             if (Utils.isValidEmailAddress(email)) {
                 context.getUser().setEmail(context.getInput());
-                next = Approved;
+                next = EnterAge;
             } else {
                 sendMessage(context, "Wrong e-mail address!");
                 next = EnterEmail;
+            }
+        }
+
+        @Override
+        public BotState nextState() {
+            return next;
+        }
+    },
+
+    EnterAge {
+        private BotState next;
+
+        @Override
+        public void enter(BotContext context) {
+            sendMessage(context, "Enter your age please:");
+        }
+
+        @Override
+        public void handleInput(BotContext context) {
+            try {
+                int age = Integer.parseInt(context.getInput());
+                if (age < 0) {
+                    throw new NumberFormatException();
+                }
+                if(age < 18) {
+                    sendMessage(context, "Only adult users are permitted!");
+                    next = Start;
+                } else {
+                    context.getUser().setAge(age);
+                    next = Approved;
+                }
+            } catch (NumberFormatException e) {
+                sendMessage(context, "Wrong age input!");
+                next = EnterAge;
             }
         }
 

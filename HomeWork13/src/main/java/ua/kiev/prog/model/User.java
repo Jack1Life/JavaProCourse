@@ -17,6 +17,8 @@ public class User {
     private Boolean admin;
     private Boolean notified = false;
 
+    private Integer age;
+
     public User() {
     }
 
@@ -61,6 +63,14 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
     }
 
     public String getEmail() {
